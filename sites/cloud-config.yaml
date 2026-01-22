@@ -1,0 +1,20 @@
+#cloud-config
+# this is not in use because Lightsail requires user-data to be a bash script :/
+package_update: true
+package_upgrade: true
+users:
+  - default
+  - name: curt
+    groups: [sudo, www-data]
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ${public_key}
+packages:
+  - fail2ban
+  - nginx
+runcmd:
+  - systemctl enable --now fail2ban.service
+  - systemctl start nginx
+  - systemctl enable nginx
+  - timedatectl set-timezone America/New_York
